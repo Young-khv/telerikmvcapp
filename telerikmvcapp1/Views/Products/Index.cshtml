@@ -20,10 +20,10 @@
     .DataSource(d => d
         .Ajax()
         .Events(events => events.Error("onError"))
-        .Create(update => update.Action("Create", "Products"))
+        .Create(c => c.Action("Create", "Products"))
         .Read(r => r.Action("Get", "Products"))
-        .Update(update => update.Action("Update", "Products"))
-        .Destroy(update => update.Action("Delete", "Products"))
+        .Update(u => u.Action("Update", "Products"))
+        .Destroy(del => del.Action("Delete", "Products"))
         .PageSize(10)
         .Model(m => {
             m.Id(p => p.Id);
