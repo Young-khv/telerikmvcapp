@@ -1,5 +1,5 @@
 ﻿@(Html.Kendo().DropDownList().Name("Supplier")
-    .DataTextField("Id")
+    .DataTextField("Name")
     .DataValueField("Id")
     .DataSource(d => d
         .Read(r => r.Action("Index", "Suppliers"))

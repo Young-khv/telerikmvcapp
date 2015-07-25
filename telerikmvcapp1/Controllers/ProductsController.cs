@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Data;
+using System.Linq;
 using System.Web.Mvc;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
@@ -48,9 +49,21 @@ namespace TelerikMvcApp1.Controllers
         {
             if (product != null && ModelState.IsValid)
             {
+                var updatedProduct = _context.Products.FirstOrDefault(p => p.ProductID == product.Id);
+                if (updatedProduct != null)
+                {
+                    updatedProduct.ProductName = product.Name;
+                    updatedProduct.UnitPrice = product.UnitPrice;
+                    updatedProduct.Discontinued = product.Discontinued;
+                    updatedProduct.SupplierID = product.Supplier.Id;
+                    updatedProduct.CategoryID = product.Category.Id;
+
+                    _context.Entry(updatedProduct).State = EntityState.Modified;
+                    _context.SaveChanges();
+                }
             }
 
-            return new JsonResult();
+            return Json(new[] { product }.ToDataSourceResult(request, ModelState));
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -60,7 +73,7 @@ namespace TelerikMvcApp1.Controllers
             {
             }
 
-            return new JsonResult();
+            return Json(new[] { product }.ToDataSourceResult(request, ModelState));
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -69,8 +82,8 @@ namespace TelerikMvcApp1.Controllers
             if (product != null && ModelState.IsValid)
             {
             }
- 
-            return new JsonResult();
+
+            return Json(new[] { product }.ToDataSourceResult(request, ModelState));
         }
     }
 }
