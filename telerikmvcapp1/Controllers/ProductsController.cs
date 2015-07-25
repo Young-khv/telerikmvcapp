@@ -44,7 +44,7 @@ namespace TelerikMvcApp1.Controllers
                     Id = p.Category.CategoryID,
                     Name = p.Category.CategoryName
                 }
-            }).OrderBy(p=>p.Name);
+            }).OrderByDescending(p=>p.Id);
             return Json(products.ToDataSourceResult(request));
         }
 
@@ -58,6 +58,7 @@ namespace TelerikMvcApp1.Controllers
                 {
                     updatedProduct.ProductName = product.Name;
                     updatedProduct.UnitPrice = product.UnitPrice;
+                    updatedProduct.UnitsInStock = product.UnitsInStock;
                     updatedProduct.Discontinued = product.Discontinued;
                     updatedProduct.SupplierID = product.Supplier.Id;
                     updatedProduct.CategoryID = product.Category.Id;
@@ -79,6 +80,7 @@ namespace TelerikMvcApp1.Controllers
                 {
                     ProductName = product.Name,
                     UnitPrice = product.UnitPrice,
+                    UnitsInStock = product.UnitsInStock,
                     Discontinued = product.Discontinued,
                     SupplierID = product.Supplier.Id,
                     CategoryID = product.Category.Id
