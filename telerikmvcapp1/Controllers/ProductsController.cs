@@ -1,9 +1,13 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Linq;
 using System.Web.Mvc;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
-using TelerikMvcApp1.Models;
+using TelerikMvcApp1.Data;
+using Category = TelerikMvcApp1.Models.Category;
+using Product = TelerikMvcApp1.Models.Product;
+using Supplier = TelerikMvcApp1.Models.Supplier;
 
 namespace TelerikMvcApp1.Controllers
 {
@@ -14,7 +18,7 @@ namespace TelerikMvcApp1.Controllers
         public ActionResult Index()
         {
             ViewData["defaultSupplier"] = _context.Suppliers.Select(
-                s => new Supplier {Id = s.SupplierID, Name = s.CompanyName}).First();
+                s => new Supplier { Id = s.SupplierID, Name = s.CompanyName }).First();
             ViewData["defaultCategory"] = _context.Categories.Select(
                 c => new Category { Id = c.CategoryID, Name = c.CategoryName }).First();
 
@@ -40,7 +44,7 @@ namespace TelerikMvcApp1.Controllers
                     Id = p.Category.CategoryID,
                     Name = p.Category.CategoryName
                 }
-            });
+            }).OrderBy(p=>p.Name);
             return Json(products.ToDataSourceResult(request));
         }
 
@@ -71,16 +75,41 @@ namespace TelerikMvcApp1.Controllers
         {
             if (product != null && ModelState.IsValid)
             {
+                var newProduct = new Data.Product
+                {
+                    ProductName = product.Name,
+                    UnitPrice = product.UnitPrice,
+                    Discontinued = product.Discontinued,
+                    SupplierID = product.Supplier.Id,
+                    CategoryID = product.Category.Id
+                };
+
+                _context.Products.Add(newProduct);
+                _context.SaveChanges();
             }
 
             return Json(new[] { product }.ToDataSourceResult(request, ModelState));
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult Delete([DataSourceRequest] DataSourceRequest request, Product product)
+        public  JsonResult Delete([DataSourceRequest] DataSourceRequest request, Product product)
         {
-            if (product != null && ModelState.IsValid)
+            if (product != null)
             {
+                var deletedProduct = _context.Products.First(p => p.ProductID == product.Id);
+
+                try
+                {
+                    _context.Products.Remove(deletedProduct);
+                    _context.SaveChanges();
+                }
+                catch (Exception exception)
+                {
+                    return this.Json(new DataSourceResult
+                    {
+                        Errors = string.Format("Product deleting was faild. Check if you trying to delete product that already using in users orders. Original server error: \n {0}",exception.Message)
+                    });
+                }
             }
 
             return Json(new[] { product }.ToDataSourceResult(request, ModelState));
