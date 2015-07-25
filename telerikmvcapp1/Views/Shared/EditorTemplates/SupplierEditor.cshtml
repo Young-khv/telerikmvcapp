@@ -1,0 +1,7 @@
+﻿@(Html.Kendo().DropDownList().Name("Supplier")
+    .DataTextField("Id")
+    .DataValueField("Id")
+    .DataSource(d => d
+        .Read(r => r.Action("Index", "Suppliers"))
+    )
+)

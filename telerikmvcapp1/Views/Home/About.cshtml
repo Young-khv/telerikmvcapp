@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+
+<hgroup class="title">
+    <h1>@ViewBag.Title.</h1>
+    <h2>@ViewBag.Message</h2>
+</hgroup>
+
+<article>
+    <p>
+        Use this area to provide additional information.
+    </p>
+
+    <p>
+        Use this area to provide additional information.
+    </p>
+
+    <p>
+        Use this area to provide additional information.
+    </p>
+</article>
+
+<aside>
+    <h3>Telerik UI for ASP.NET MVC TreeView</h3>
+    <p>
+        Use this area to provide additional information.
+    </p>
+
+    @(Html.Kendo().TreeView()
+        .Name("LinksTreeView")
+        .Items(items =>
+        {
+            items.Add()
+                .Text("Home")
+                .Action("Index", "Home");
+            items.Add()
+                .Text("About")
+                .Action("About", "Home");
+            items.Add()
+                .Text("Contact")
+                .Action("Contact", "Home");
+        })
+    )
+    @(Html.Kendo().NumericTextBox().Name("age").Value(10).Spinners(false).Events(events =>
+          events.Change("age_change") // handle the "change" event
+                .Spin("age_spin")     // handle the "spin" event
+      ).Deferred())
+
+</aside>
+@(Html.Kendo().DeferredScripts())
+
+<script>
+    $(function () {
+        var numeric = $("#age").data("kendoNumericTextBox");
+        console.log('numeric.value(66)');
+        numeric.value(66);
+    });
+</script>
+
+<script>
+    function age_change(e) {
+        alert(e);
+        // handle the event
+    }
+    function age_spin(e) {
+        // handle the event
+    }
+</script>

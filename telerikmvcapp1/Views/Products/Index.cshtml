@@ -1,0 +1,47 @@
+﻿@using TelerikMvcApp1.Models;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@(Html.Kendo().Grid<Product>().Name("Products")
+    .Columns(c =>
+    {
+        c.Bound(p => p.Id).Hidden();
+        c.Bound(p => p.Name);
+        c.Bound(p => p.Supplier.Name).Title("Suppplier").EditorTemplateName("SupplierEditor");
+        c.Bound(p => p.Category).ClientTemplate("#: Category.Name #").Title("Category");
+        c.Bound(p => p.UnitPrice).Format("{0:c}").Title("Price");
+        c.Bound(p => p.UnitsInStock).Width(75).Title("# In Stock");
+        c.Bound(p => p.Discontinued).Width(75);
+    })
+    .DataSource(d => d
+        .Ajax()
+        .Read(r => r.Action("Get", "Products"))
+        .PageSize(5)
+        .Model(m => {
+            m.Id(p => p.Id);
+            m.Field(p => p.Supplier).DefaultValue(
+                ViewData["defaultSupplier"] as Supplier);
+            m.Field(p => p.Category).DefaultValue(
+                ViewData["defaultCategory"] as Category);
+        })
+    )
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Groupable()
+    .Selectable()
+      )
+
+<!--Handle grid row selection-->
+<script>
+    $("#Products").click(function () {
+
+        var selectedGridRow = $("#Products").data("kendoGrid");
+        var selectedRowData = selectedGridRow.dataItem(selectedGridRow.select());
+        alert(selectedRowData.id);
+    });
+</script>
